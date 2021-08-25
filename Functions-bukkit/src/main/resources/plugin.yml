@@ -1,0 +1,7 @@
+name: Functions
+version: '3.0.0.0'
+main: org.functions.Bukkit.Main.Functions
+softdepend: [ Vault, PlaceholderAPI ]
+authors: [ 2b2ttianxiu ]
+description: Hello
+website: github.com/2b2ttanxiu/Functions

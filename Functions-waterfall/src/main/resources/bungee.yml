@@ -1,0 +1,4 @@
+name: Functions
+version: '${project.version}'
+main: org.functions.Main.Bungee.Functions
+description: Welcome

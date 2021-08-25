@@ -1,0 +1,76 @@
+Groups:
+  Default:
+    DisplayName: "&7默认"
+    Name: "&7默认组"
+    Prefix: "&7"
+    Suffix: "none"
+    Prefixes: []
+    Suffixes: []
+    Format:
+      Chat: "&d[%functions_date% %functions_time%]&r<%functions_player_display_name%> %message%"
+      Join: "&7[&a+&7] %functions_player_display_name% 进入了游戏在 %functions_date% %functions_time%"
+      Quit: "&7[&a+&7] %functions_player_display_name% 离开了游戏在 %functions_date% %functions_time%"
+      Message:
+        #发送的玩家看见
+        To: "&a发送%functions_player_display_name%的玩家一条私信> %message%"
+        #接受胡玩家看见
+        From: "&a来自：%functions_player_display_name%的玩家给你的一条私信> %message%"
+    Anti_Settings:
+      Words:
+        - "fuck"
+        - "shit"
+        - "motherfuck"
+      Replace:
+        fuck: "****"
+        shit: "****"
+        motherfuck: "**********"
+    needOP: false
+    Permissions: []
+  VIP:
+    DisplayName: "&e会员"
+    Name: "&e会员组"
+    Prefix: "&e[会员] "
+    Suffix: "none"
+    Prefixes: [ ]
+    Suffixes: [ ]
+    Format:
+      Chat: "&d[%functions_date% %functions_time%]&r<%functions_player_display_name%> %message%"
+      Join: "&7[&a+&7] %functions_player_display_name% 进入了游戏在 %functions_date% %functions_time%"
+      Quit: "&7[&a+&7] %functions_player_display_name% 离开了游戏在 %functions_date% %functions_time%"
+      Message:
+        #发送的玩家看见
+        To: "&a发送%functions_player_display_name%的玩家一条私信> %message%"
+        #接受胡玩家看见
+        From: "&a来自：%functions_player_display_name%的玩家给你的一条私信> %message%"
+    Anti_Settings:
+      Words:
+        - "fuck"
+        - "shit"
+        - "motherfuck"
+      Replace:
+        fuck: "****"
+        shit: "****"
+        motherfuck: "**********"
+    needOP: false
+    Permissions: [ ]
+  Admin:
+    DisplayName: "&c管理"
+    Name: "&c默认组"
+    Prefix: "&c[管理员] "
+    Suffix: "none"
+    Prefixes: [ ]
+    Suffixes: [ ]
+    Format:
+      Chat: "&d[%functions_date% %functions_time%]&r<%functions_player_display_name%> %message%"
+      Join: "&7[&a+&7] %functions_player_display_name% 进入了游戏在 %functions_date% %functions_time%"
+      Quit: "&7[&a+&7] %functions_player_display_name% 离开了游戏在 %functions_date% %functions_time%"
+      Message:
+        #发送的玩家看见
+        To: "&a发送%functions_player_display_name%的玩家一条私信> %message%"
+        #接受胡玩家看见
+        From: "&a来自：%functions_player_display_name%的玩家给你的一条私信> %message%"
+    Anti_Settings:
+      Words: []
+      Replace:
+    needOP: false
+    Permissions: [ ]

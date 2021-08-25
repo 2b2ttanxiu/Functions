@@ -1,0 +1,14 @@
+check-update:
+  minutes: 10
+  Download: true
+Date: "yyyy-MM-dd"
+Time: "HH:mm:ss"
+Tab:
+  Enable: true
+  List: "%functions_display_name%"
+  Header: []
+  Footer: []
+Money:
+  InitPlayerBalance: 500.0
+  customSymbolEnabled: false
+  customSymbol: ""
