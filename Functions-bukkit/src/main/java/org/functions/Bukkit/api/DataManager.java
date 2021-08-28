@@ -3,12 +3,14 @@ package org.functions.Bukkit.api;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.functions.Bukkit.Main.Group;
+import org.functions.Bukkit.api.Economy.Economy;
+import org.functions.Bukkit.api.Economy.YamlEconomy;
 
 import java.nio.channels.FileChannel;
 import java.util.UUID;
 
 public interface DataManager {
-    EconomyManager getEconomy();
+    YamlEconomy getEconomy();
     HomeManager getHomes();
     BackManager getBacks();
     Player getPlayer();

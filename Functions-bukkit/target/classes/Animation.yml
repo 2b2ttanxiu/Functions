@@ -1,8 +1,0 @@
-interval: 1000
-random: false
-line:
-  - "h---o"
-  - "he-lo"
-  - "hello"
-  - "he-lo"
-  - "h--o"

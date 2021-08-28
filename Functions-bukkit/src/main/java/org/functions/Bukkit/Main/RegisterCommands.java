@@ -15,6 +15,11 @@ public class RegisterCommands {
         CommandDeleteOperator.run();
         CommandOperator.run();
         CommandPermission.run();
+        CommandWarps.run();
+        CommandEconomy.run();
+        CommandMoney.run();
+        CommandPay.run();
+        CommandHat.run();
         Functions.instance.getAPI().sendConsole("§aRegister Commands successfully!");
     }
 }

@@ -11,7 +11,6 @@ import org.functions.Bukkit.api.Economy.YamlEconomy;
 import java.util.List;
 
 public class VaultHook {
-    static org.functions.Bukkit.api.Economy.Economy econ;
     static Economy eco = null;
     public static boolean hasVault() {
         if (Functions.instance.getServer().getPluginManager().getPlugin("Vault") != null) {
@@ -26,7 +25,7 @@ public class VaultHook {
         }
         return false;
     }
-    public static org.functions.Bukkit.api.Economy.Economy getEco() {
+    public static YamlEconomy getEco() {
         return new YamlEconomy();
     }
 }

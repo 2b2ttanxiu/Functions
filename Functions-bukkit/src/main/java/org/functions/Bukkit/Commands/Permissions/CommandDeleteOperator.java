@@ -32,15 +32,15 @@ public class CommandDeleteOperator implements TabExecutor {
             Player target = Bukkit.getPlayer(args[0]);
             if (args.length == 1) {
                 for (String v : a.getOperators()) {
-                    if (!v.equalsIgnoreCase(target.getName())) {
-                        sender.sendMessage(api.putLanguage("IsOperator","&c%target% 是管理员？").replace("%target%",target.getName()));
+                    if (v.equalsIgnoreCase(target.getName())) {
+                        List<String> ls = a.getOperators();
+                        ls.remove(args[0]);
+                        a.saveOperators(ls);
+                        sender.sendMessage(api.putLanguage("DeleteOperator","&a成功删除 %target% 的管理员！").replace("%target%",target.getName()));
                         return true;
                     }
                 }
-                List<String> ls = a.getOperators();
-                ls.remove(args[0]);
-                a.saveOperators(ls);
-                sender.sendMessage(api.putLanguage("DeleteOperator","&a成功删除 %target% 的管理员！").replace("%target%",target.getName()));
+                sender.sendMessage(api.putLanguage("IsOperator","&c%target% 是管理员？").replace("%target%",target.getName()));
                 return true;
             }
             sender.sendMessage(api.putLanguage("NotFoundOperators","&c没有找到这名玩家！"));
@@ -50,11 +50,14 @@ public class CommandDeleteOperator implements TabExecutor {
             if (args.length == 1) {
                 for (String v : a.getOperators()) {
                     if (v.equalsIgnoreCase(target.getName())) {
-                        sender.sendMessage(api.putLanguage("IsOperator","&c%target% 是管理员？").replace("%target%",target.getName()));
+                        List<String> ls = a.getOperators();
+                        ls.remove(args[0]);
+                        a.saveOperators(ls);
+                        sender.sendMessage(api.putLanguage("DeleteOperator","&a成功删除 %target% 的管理员！").replace("%target%",target.getName()));
                         return true;
                     }
                 }
-                sender.sendMessage(api.putLanguage("SetOperator","&a成功设置 %target% 为管理员！").replace("%target%",target.getName()));
+                sender.sendMessage(api.putLanguage("IsOperator","&c%target% 是管理员？").replace("%target%",target.getName()));
                 return true;
             }
             sender.sendMessage(api.putLanguage("NotFoundOperators","&c没有找到这名玩家！"));

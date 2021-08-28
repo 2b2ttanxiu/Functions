@@ -41,28 +41,28 @@ public class CommandPermission implements TabExecutor {
                                 List<String> ls = group.getPermissions();
                                 for (String v : ls) {
                                     if (v.equalsIgnoreCase(args[3])) {
-                                        sender.sendMessage(api.putLanguage("isPermission-group","&c%group% 用户组的权限是否在权限列表里？").replace("%group%",group.getName()).replace("%player%",sender.getName()).replace("%permission%",args[3]));
+                                        ls.add(args[3]);
+                                        group.setPermissions(ls);
+                                        group.save();
+                                        sender.sendMessage(api.putLanguage("addPermission-group","&a成功添加 %group% 用户组的权限！").replace("%group%",group.getName()).replace("%player%",sender.getName()).replace("%permission%",args[3]));
                                         return true;
                                     }
                                 }
-                                ls.add(args[3]);
-                                group.setPermissions(ls);
-                                group.save();
-                                sender.sendMessage(api.putLanguage("addPermission-group","&a成功添加 %group% 用户组的权限！").replace("%group%",group.getName()).replace("%player%",sender.getName()).replace("%permission%",args[3]));
+                                sender.sendMessage(api.putLanguage("isPermission-group","&c%group% 用户组的权限是否在权限列表里？").replace("%group%",group.getName()).replace("%player%",sender.getName()).replace("%permission%",args[3]));
                                 return true;
                             }
                             if ("remove".equalsIgnoreCase(args[2])) {
                                 List<String> ls = group.getPermissions();
                                 for (String v : ls) {
                                     if (!v.equalsIgnoreCase(args[3])) {
-                                        sender.sendMessage(api.putLanguage("isPermission-group","&c%group% 用户组的权限是否在权限列表里？").replace("%group%",group.getName()).replace("%player%",sender.getName()).replace("%permission%",args[3]));
+                                        ls.remove(args[3]);
+                                        group.setPermissions(ls);
+                                        group.save();
+                                        sender.sendMessage(api.putLanguage("removePermission-group","&a成功移除 %group% 用户组的权限！").replace("%group%",group.getName()).replace("%player%",sender.getName()).replace("%permission%",args[3]));
                                         return true;
                                     }
                                 }
-                                ls.remove(args[3]);
-                                group.setPermissions(ls);
-                                group.save();
-                                sender.sendMessage(api.putLanguage("removePermission-group","&a成功移除 %group% 用户组的权限！").replace("%group%",group.getName()).replace("%player%",sender.getName()).replace("%permission%",args[3]));
+                                sender.sendMessage(api.putLanguage("isPermission-group","&c%group% 用户组的权限是否在权限列表里？").replace("%group%",group.getName()).replace("%player%",sender.getName()).replace("%permission%",args[3]));
                                 return true;
                             }
                             List<String> ls = group.getPermissions();
@@ -84,29 +84,29 @@ public class CommandPermission implements TabExecutor {
                         if ("add".equalsIgnoreCase(args[2])) {
                             List<String> ls = data.getPermissionManager().getPermissions();
                             for (String v : ls) {
-                                if (v.equalsIgnoreCase(args[3])) {
-                                    sender.sendMessage(api.putLanguage("isPermission-user","&c%target% 用户的权限是否在权限列表里？").replace("%target%",user.getName()).replace("%player%",sender.getName()).replace("%permission%",args[3]));
+                                if (!v.equalsIgnoreCase(args[3])) {
+                                    ls.add(args[3]);
+                                    data.getPermissionManager().setPermissions(ls);
+                                    data.save();
+                                    sender.sendMessage(api.putLanguage("addPermission-user","&a成功添加 %target% 用户的权限！").replace("%target%",user.getName()).replace("%player%",sender.getName()).replace("%permission%",args[3]));
                                     return true;
                                 }
                             }
-                            ls.add(args[3]);
-                            data.getPermissionManager().setPermissions(ls);
-                            data.save();
-                            sender.sendMessage(api.putLanguage("addPermission-user","&a成功添加 %target% 用户的权限！").replace("%target%",user.getName()).replace("%player%",sender.getName()).replace("%permission%",args[3]));
+                            sender.sendMessage(api.putLanguage("isPermission-user","&c%target% 用户的权限是否在权限列表里？").replace("%target%",user.getName()).replace("%player%",sender.getName()).replace("%permission%",args[3]));
                             return true;
                         }
                         if ("remove".equalsIgnoreCase(args[2])) {
                             List<String> ls = data.getPermissionManager().getPermissions();
                             for (String v : ls) {
-                                if (!v.equalsIgnoreCase(args[3])) {
-                                    sender.sendMessage(api.putLanguage("isPermission-user","&c%target% 用户的权限是否在权限列表里？").replace("%target%",user.getName()).replace("%player%",sender.getName()).replace("%permission%",args[3]));
+                                if (v.equalsIgnoreCase(args[3])) {
+                                    ls.remove(args[3]);
+                                    data.getPermissionManager().setPermissions(ls);
+                                    data.save();
+                                    sender.sendMessage(api.putLanguage("removePermission-user","&a成功移除 %target% 用户的权限！").replace("%target%",user.getName()).replace("%player%",sender.getName()).replace("%permission%",args[3]));
                                     return true;
                                 }
                             }
-                            ls.remove(args[3]);
-                            data.getPermissionManager().setPermissions(ls);
-                            data.save();
-                            sender.sendMessage(api.putLanguage("removePermission-user","&a成功移除 %target% 用户的权限！").replace("%target%",user.getName()).replace("%player%",sender.getName()).replace("%permission%",args[3]));
+                            sender.sendMessage(api.putLanguage("isPermission-user","&c%target% 用户的权限是否在权限列表里？").replace("%target%",user.getName()).replace("%player%",sender.getName()).replace("%permission%",args[3]));
                             return true;
                         }
                         List<String> ls = data.getPermissionManager().getPermissions();
@@ -132,28 +132,28 @@ public class CommandPermission implements TabExecutor {
                                 List<String> ls = group.getPermissions();
                                 for (String v : ls) {
                                     if (v.equalsIgnoreCase(args[3])) {
-                                        sender.sendMessage(api.putLanguage("isPermission-group","&c%group% 用户组的权限是否在权限列表里？").replace("%group%",group.getName()).replace("%player%",sender.getName()).replace("%permission%",args[3]));
+                                        ls.add(args[3]);
+                                        group.setPermissions(ls);
+                                        group.save();
+                                        sender.sendMessage(api.putLanguage("addPermission-group","&a成功添加 %group% 用户组的权限！").replace("%group%",group.getName()).replace("%player%",sender.getName()).replace("%permission%",args[3]));
                                         return true;
                                     }
                                 }
-                                ls.add(args[3]);
-                                group.setPermissions(ls);
-                                group.save();
-                                sender.sendMessage(api.putLanguage("addPermission-group","&a成功添加 %group% 用户组的权限！").replace("%group%",group.getName()).replace("%player%",sender.getName()).replace("%permission%",args[3]));
+                                sender.sendMessage(api.putLanguage("isPermission-group","&c%group% 用户组的权限是否在权限列表里？").replace("%group%",group.getName()).replace("%player%",sender.getName()).replace("%permission%",args[3]));
                                 return true;
                             }
                             if ("remove".equalsIgnoreCase(args[2])) {
                                 List<String> ls = group.getPermissions();
                                 for (String v : ls) {
                                     if (!v.equalsIgnoreCase(args[3])) {
-                                        sender.sendMessage(api.putLanguage("isPermission-group","&c%group% 用户组的权限是否在权限列表里？").replace("%group%",group.getName()).replace("%player%",sender.getName()).replace("%permission%",args[3]));
+                                        ls.remove(args[3]);
+                                        group.setPermissions(ls);
+                                        group.save();
+                                        sender.sendMessage(api.putLanguage("removePermission-group","&a成功移除 %group% 用户组的权限！").replace("%group%",group.getName()).replace("%player%",sender.getName()).replace("%permission%",args[3]));
                                         return true;
                                     }
                                 }
-                                ls.remove(args[3]);
-                                group.setPermissions(ls);
-                                group.save();
-                                sender.sendMessage(api.putLanguage("removePermission-group","&a成功移除 %group% 用户组的权限！").replace("%group%",group.getName()).replace("%player%",sender.getName()).replace("%permission%",args[3]));
+                                sender.sendMessage(api.putLanguage("isPermission-group","&c%group% 用户组的权限是否在权限列表里？").replace("%group%",group.getName()).replace("%player%",sender.getName()).replace("%permission%",args[3]));
                                 return true;
                             }
                             List<String> ls = group.getPermissions();
@@ -175,29 +175,29 @@ public class CommandPermission implements TabExecutor {
                         if ("add".equalsIgnoreCase(args[2])) {
                             List<String> ls = data.getPermissionManager().getPermissions();
                             for (String v : ls) {
-                                if (v.equalsIgnoreCase(args[3])) {
-                                    sender.sendMessage(api.putLanguage("isPermission-user","&c%target% 用户的权限是否在权限列表里？").replace("%target%",user.getName()).replace("%player%",sender.getName()).replace("%permission%",args[3]));
+                                if (!v.equalsIgnoreCase(args[3])) {
+                                    ls.add(args[3]);
+                                    data.getPermissionManager().setPermissions(ls);
+                                    data.save();
+                                    sender.sendMessage(api.putLanguage("addPermission-user","&a成功添加 %target% 用户的权限！").replace("%target%",user.getName()).replace("%player%",sender.getName()).replace("%permission%",args[3]));
                                     return true;
                                 }
                             }
-                            ls.add(args[3]);
-                            data.getPermissionManager().setPermissions(ls);
-                            data.save();
-                            sender.sendMessage(api.putLanguage("addPermission-user","&a成功添加 %target% 用户的权限！").replace("%target%",user.getName()).replace("%player%",sender.getName()).replace("%permission%",args[3]));
+                            sender.sendMessage(api.putLanguage("isPermission-user","&c%target% 用户的权限是否在权限列表里？").replace("%target%",user.getName()).replace("%player%",sender.getName()).replace("%permission%",args[3]));
                             return true;
                         }
                         if ("remove".equalsIgnoreCase(args[2])) {
                             List<String> ls = data.getPermissionManager().getPermissions();
                             for (String v : ls) {
-                                if (!v.equalsIgnoreCase(args[3])) {
-                                    sender.sendMessage(api.putLanguage("isPermission-user","&c%target% 用户的权限是否在权限列表里？").replace("%target%",user.getName()).replace("%player%",sender.getName()).replace("%permission%",args[3]));
+                                if (v.equalsIgnoreCase(args[3])) {
+                                    ls.remove(args[3]);
+                                    data.getPermissionManager().setPermissions(ls);
+                                    data.save();
+                                    sender.sendMessage(api.putLanguage("removePermission-user","&a成功移除 %target% 用户的权限！").replace("%target%",user.getName()).replace("%player%",sender.getName()).replace("%permission%",args[3]));
                                     return true;
                                 }
                             }
-                            ls.remove(args[3]);
-                            data.getPermissionManager().setPermissions(ls);
-                            data.save();
-                            sender.sendMessage(api.putLanguage("removePermission-user","&a成功移除 %target% 用户的权限！").replace("%target%",user.getName()).replace("%player%",sender.getName()).replace("%permission%",args[3]));
+                            sender.sendMessage(api.putLanguage("isPermission-user","&c%target% 用户的权限是否在权限列表里？").replace("%target%",user.getName()).replace("%player%",sender.getName()).replace("%permission%",args[3]));
                             return true;
                         }
                         List<String> ls = data.getPermissionManager().getPermissions();

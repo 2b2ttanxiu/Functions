@@ -15,7 +15,7 @@ public class WarpsManager {
         Set<String> key = set.getConfigurationSection("Warps").getKeys(false);
         List<String> ls = new ArrayList<>(key);
         for (String s : ls) {
-            warps.add(new Warps(set.getString("Warps." + s + ".Name"),Functions.instance.getAPI().formatLocation(set.getString("Warps." + s + ".Location"))));
+            warps.add(new Warps(s,Functions.instance.getAPI().formatLocation(set.getString("Warps." + s))));
         }
         return warps;
     }
@@ -33,8 +33,13 @@ public class WarpsManager {
         }
         return null;
     }
-    public void setWarp(String name,Warps warp) {
-        set.set("Warps." + name + ".Name",warp.getName());
-        set.set("Warps." + name + ".Location",warp.toLocation());
+    public void removeWarp(String name) {
+        set.set("Warps." + name,null);
+    }
+    public void setWarp(Warps warp) {
+        set.set("Warps." + warp.getName(),warp.toLocation());
+    }
+    public void addWarp(Warps warp) {
+        setWarp(warp);
     }
 }

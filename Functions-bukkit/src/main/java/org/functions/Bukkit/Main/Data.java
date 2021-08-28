@@ -5,6 +5,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.functions.Bukkit.api.*;
 import org.functions.Bukkit.api.Economy.Economy;
+import org.functions.Bukkit.api.Economy.YamlEconomy;
 import org.functions.Bukkit.api.Permissions.BukkitPermission;
 
 import java.util.*;
@@ -27,8 +28,8 @@ public class Data implements DataManager {
     public static Economy getEco() {
         return as.getVault().getEco();
     }
-    public EconomyManager getEconomy() {
-        return null;
+    public YamlEconomy getEconomy() {
+        return new YamlEconomy();
     }
     String home_path = "Homes.";
     String home_name;

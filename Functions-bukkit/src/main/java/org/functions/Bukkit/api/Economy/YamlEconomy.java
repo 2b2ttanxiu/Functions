@@ -31,7 +31,6 @@ public class YamlEconomy implements Economy {
             this.path = path;
             this.saveDefaultConfig();
         }
-
         public void reloadConfig() {
             if (this.configFile == null) {
                 this.configFile = new File(this.path, this.fileName);
@@ -82,6 +81,25 @@ public class YamlEconomy implements Economy {
 
         }
     }
+    public static List<String> getPlayersUUID() {
+        File dir = new File(getPaths() + "/user/data");
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        List<String> uid = new ArrayList();
+        File[] files = (new File(getPaths() + "/user/data")).listFiles();
+        File[] var6 = files;
+        int var5 = files.length;
+        for(int var4 = 0; var4 < var5; ++var4) {
+            File file = var6[var4];
+            if (file.getName().contains("-Error-Arching.yml")) {
+                continue;
+            }
+            uid.add(file.getName().replace(".yml",""));
+        }
+
+        return uid;
+    }
     public static String getPaths() {
         return Functions.instance.getDataFolder().getAbsolutePath();
     }
@@ -89,7 +107,7 @@ public class YamlEconomy implements Economy {
         return Functions.instance.getDataFolder().getAbsolutePath();
     }
     public YamlEconomy() {
-        Path dataDir = Paths.get(Functions.instance.getDataFolder().getAbsolutePath() + "/user/economy/");
+        Path dataDir = Paths.get(Functions.instance.getDataFolder().getAbsolutePath() + "/user/data/");
         if (!Files.exists(dataDir, new LinkOption[0])) {
             try {
                 Files.createDirectory(dataDir);
@@ -137,7 +155,7 @@ public class YamlEconomy implements Economy {
             return false;
         } else {
             FileConfiguration data = Functions.instance.getData_Economy(uuid);
-            data.set("uuid", uuid);
+            data.set("uuid", uuid.toString());
             data.set("Balance", amount);
             try {
                 data.save(new File(Functions.instance.getEconomyFolder(), uuid+".yml"));
@@ -162,12 +180,12 @@ public class YamlEconomy implements Economy {
         }
     }
     public static List<PlayerBalance> getFilePlayers() {
-        File dir = new File(getPaths() + "/user/economy");
+        File dir = new File(getPaths() + "/user/data");
         if (!dir.exists()) {
             dir.mkdirs();
         }
         List<PlayerBalance> playerData = new ArrayList();
-        File[] files = (new File(getPaths() + "/user/economy")).listFiles();
+        File[] files = (new File(getPaths() + "/user/data")).listFiles();
         File[] var6 = files;
         int var5 = files.length;
         for(int var4 = 0; var4 < var5; ++var4) {
@@ -185,7 +203,7 @@ public class YamlEconomy implements Economy {
     }
     public List<PlayerBalance> getPlayers() {
         List<PlayerBalance> playerData = new ArrayList();
-        File[] files = (new File(getPaths() + "/user/economy")).listFiles();
+        File[] files = (new File(getPaths() + "/user/data")).listFiles();
         File[] var6 = files;
         int var5 = files.length;
 

@@ -7,14 +7,14 @@ Groups:
     Prefixes: []
     Suffixes: []
     Format:
-      Chat: "&d[%date% %time%]&r<%display_name%> %message%"
-      Join: "&7[&a+&7] %display_name% 进入了游戏在 %date% %time%"
-      Quit: "&7[&a+&7] %display_name% 离开了游戏在 %date% %time%"
+      Chat: "&d[%date% %time%]&r<%player%> %message%"
+      Join: "&7[&a+&7] %player% 进入了游戏在 %date% %time%"
+      Quit: "&7[-] %player% 离开了游戏在 %date% %time%"
       Message:
         #发送的玩家看见
-        To: "&a发送%display_name%的玩家一条私信> %message%"
+        To: "&a发送%player%的玩家一条私信> %message%"
         #接受胡玩家看见
-        From: "&a来自：%display_name%的玩家给你的一条私信> %message%"
+        From: "&a来自：%dplayer%的玩家给你的一条私信> %message%"
     Anti_Settings:
       Words:
         - "fuck"
@@ -32,6 +32,11 @@ Groups:
       - "functions.event.break"
       - "functions.command.report"
       - "functions.command.suicide"
+      - "functions.command.pay"
+      - "functions.command.warps"
+      - "functions.command.money"
+      - "functions.command.home"
+      - "functions.command.back"
   VIP:
     DisplayName: "&e会员"
     Name: "&e会员组"
@@ -40,12 +45,12 @@ Groups:
     Prefixes: [ ]
     Suffixes: [ ]
     Format:
-      Chat: "&d[%date% %time%]&r<%display_name%> %message%"
-      Join: "&7[&a+&7] %display_name% 进入了游戏在 %date% %time%"
-      Quit: "&7[&a+&7] %display_name% 离开了游戏在 %date% %time%"
+      Chat: "&d[%date% %time%]&r<%player%> %message%"
+      Join: "&7[&a+&7] %player% 进入了游戏在 %date% %time%"
+      Quit: "&7[-] %player% 离开了游戏在 %date% %time%"
       Message:
-        To: "&a发送%display_name%的玩家一条私信> %message%"
-        From: "&a来自：%display_name%的玩家给你的一条私信> %message%"
+        To: "&a发送%player%的玩家一条私信> %message%"
+        From: "&a来自：%dplayer%的玩家给你的一条私信> %message%"
     Anti_Settings:
       Words:
         - "fuck"
@@ -62,6 +67,12 @@ Groups:
       - "functions.event.break"
       - "functions.command.report"
       - "functions.command.suicide"
+      - "functions.command.pay"
+      - "functions.command.warps"
+      - "functions.command.money"
+      - "functions.command.home"
+      - "functions.command.back"
+      - "functions.command.hat"
   Admin:
     DisplayName: "&c管理"
     Name: "&c管理组"
@@ -70,12 +81,12 @@ Groups:
     Prefixes: [ ]
     Suffixes: [ ]
     Format:
-      Chat: "&d[%date% %time%]&r<%display_name%> %message%"
-      Join: "&7[&a+&7] %display_name% 进入了游戏在 %date% %time%"
-      Quit: "&7[&a+&7] %display_name% 离开了游戏在 %date% %time%"
+      Chat: "&d[%date% %time%]&r<%player%> %message%"
+      Join: "&7[&a+&7] %player% 进入了游戏在 %date% %time%"
+      Quit: "&7[-] %player% 离开了游戏在 %date% %time%"
       Message:
-        To: "&a发送%display_name%的玩家一条私信> %message%"
-        From: "&a来自：%display_name%的玩家给你的一条私信> %message%"
+        To: "&a发送%player%的玩家一条私信> %message%"
+        From: "&a来自：%dplayer%的玩家给你的一条私信> %message%"
     Anti_Settings:
       Words: []
       Replace:
@@ -88,3 +99,14 @@ Groups:
       - "functions.command.suicide"
       - "functions.command.main.*"
       - "functions.command.group.*"
+      - "functions.command.op"
+      - "functions.command.deop"
+      - "functions.command.pay"
+      - "functions.command.economy.*"
+      - "functions.command.warps"
+      - "functions.command.permission"
+      - "functions.command.money"
+      - "functions.command.home"
+      - "functions.command.back"
+      - "functions.command.hat"
+      - "functions.command.gamemode.*"

@@ -256,28 +256,21 @@ public final class Functions extends JavaPlugin {
     private File economy_file;
     private File dir = new File(getDataFolder().getAbsolutePath(),"user");
     private File dir_data = new File(dir,"data");
-    private File dir_economy = new File(dir,"economy");
     public File getEconomyFolder() {
-        return new File(dir,"economy");
+        return new File(dir,"data");
     }
     public void saveData(UUID uuid) {
         user_file = new File(dir_data,uuid+".yml");
-        economy_file = new File(dir_economy,uuid+".yml");
         try {
             data.save(user_file);
-            economy.save(economy_file);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
     public void onData(UUID uuid){
         File data = new File(dir,"data");
-        File economy = new File(dir,"economy");
         if (!data.exists()) {
             data.mkdirs();
-        }
-        if (!economy.exists()) {
-            economy.mkdirs();
         }
         user_file = new File(data,uuid+".yml");
         try {
@@ -295,67 +288,23 @@ public final class Functions extends JavaPlugin {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        economy_file = new File(economy,uuid+".yml");
-        try {
-            if (!economy_file.exists()) {
-                InputStream in = getResource("user.yml");
-                OutputStream out = new FileOutputStream(economy_file);
-                byte[] buf = new byte[1024];
-                int len;
-                while ((len = in.read(buf)) > 0) {
-                    out.write(buf, 0, len);
-                }
-                out.close();
-                in.close();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
     private FileConfiguration economy = new YamlConfiguration();
     private FileConfiguration data = new YamlConfiguration();
     public FileConfiguration getData_Economy(UUID uuid) {
-        File file = new File(dir_economy,uuid+".yml");
-        YamlConfiguration.loadConfiguration(file);
-        File Error_Arching = new File(dir_economy,uuid+"-Error-Arching.yml");
-        try {
-            economy.save(file);
-            economy.load(file);
-            economy.set("uuid",uuid.toString()+"");
-        } catch (IOException e) {
-            if (Error_Arching.exists()) {
-                Error_Arching.deleteOnExit();
-                Error_Arching.delete();
-            }
-            file.renameTo(Error_Arching);
-            file.deleteOnExit();
-            file.delete();
-            onData(uuid);
-            e.printStackTrace();
-        } catch (InvalidConfigurationException e) {
-            if (Error_Arching.exists()) {
-                Error_Arching.deleteOnExit();
-                Error_Arching.delete();
-            }
-            file.renameTo(Error_Arching);
-            file.deleteOnExit();
-            file.delete();
-            onData(uuid);
-            e.printStackTrace();
-            e.printStackTrace();
-        }
-        return economy;
+        return getData_Data(uuid);
     }
     public FileConfiguration getData_Data(UUID uuid) {
         File file = new File(dir_data,uuid+".yml");
         YamlConfiguration.loadConfiguration(file);
         File Error_Arching = new File(dir_data,uuid+"-Error-Arching.yml");
         try {
-            data.save(file);
             data.load(file);
             data.set("uuid",uuid.toString()+"");
             if (data.getString("Group")==null) {
-                data.set("Group","Default");
+                data.addDefault("Group", "Default");
+                data.options().copyDefaults(true);
+                data.options().copyHeader();
             }
             data.save(file);
         } catch (IOException e) {

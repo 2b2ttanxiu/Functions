@@ -1,5 +1,0 @@
-Enabled: "Default"
-Default:
-  MaxPlayers: 20
-  line:
-    - "example\nexample"

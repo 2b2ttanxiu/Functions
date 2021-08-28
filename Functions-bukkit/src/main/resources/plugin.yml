@@ -27,3 +27,13 @@ commands:
     description: Functions give player operator.
   deop:
     description: Functions delete player operator.
+  warps:
+    description: Functions warp player.
+  economy:
+    description: Functions economy.
+  money:
+    description: Functions money.
+  pay:
+    description: Functions pay.
+  hat:
+    description: Functions hat.

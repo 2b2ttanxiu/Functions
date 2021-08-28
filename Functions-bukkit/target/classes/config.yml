@@ -1,8 +1,0 @@
-Prefix: "§3[§bFunctions§3] §r"
-Language: "cn"
-Locale: "en-US"
-Server-Name: "Unknown"
-check-update: false
-AutoSaveConfiguration:
-  delay: 20
-  period: 300
