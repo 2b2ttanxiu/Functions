@@ -1,6 +1,5 @@
 package org.functions.Bukkit.Main;
 
-import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.FileConfigurationOptions;
@@ -8,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.functions.Bukkit.Events.PlayerSendMessageEvent;
 import org.functions.Bukkit.api.*;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
@@ -122,6 +122,14 @@ public class Group implements GroupManager {
         return set.getStringList(path + "Permissions");
     }
 
+    public long getChatDelay() {
+        return set.getLong(path+".ChatDelay");
+    }
+
+    public long getCommandDelay() {
+        return set.getLong(path+".CommandDelay");
+    }
+
     public Mute getMute() {
         return new Mute() {
             public boolean getMute() {
@@ -141,7 +149,10 @@ public class Group implements GroupManager {
                 }
                 return false;
             }
-
+            public void setUnTempMute() {
+                set.set(path + "Mute.tempTime_start",null);
+                set.set(path + "Mute.tempTime",null);
+            }
             public void setTempMute(long start, long end) {
                 set.set(path + "Mute.tempTime_start",start);
                 set.set(path + "Mute.tempTime",end);
@@ -154,15 +165,16 @@ public class Group implements GroupManager {
                 return set.getLong(path + "Mute.tempTime");
             }
             public boolean exists() {
-                if (getMute()) {
-                    return true;
-                }
-                if (getTempMute()) {
-                    return true;
-                }
-                return false;
+                return getTempMute();
             }
         };
+    }
+    public void save() {
+        try {
+            set.save(Functions.instance.group_file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     public boolean needOP() {
         return set.getBoolean(path+"needOP");
@@ -175,7 +187,7 @@ public class Group implements GroupManager {
             public boolean hasAntiWord(String word) {
                 List<String> ls = set.getStringList(path+"Anti_Settings.Words");
                 for (String s : ls) {
-                    if (s.equalsIgnoreCase(word)) {
+                    if (word.toLowerCase().contains(s)) {
                         return true;
                     }
                 }
@@ -186,7 +198,7 @@ public class Group implements GroupManager {
                 List<String> ls = set.getStringList(path+"Anti_Settings.Words");
                 Set<String> keys = set.getConfigurationSection(path+"Anti_Settings.Replace").getKeys(false);
                 for (String s : ls) {
-                    if (s.equalsIgnoreCase(word)) {
+                    if (word.toLowerCase().contains(s)) {
                         for (String key : keys) {
                             if (s.equalsIgnoreCase(key)) {
                                 return true;

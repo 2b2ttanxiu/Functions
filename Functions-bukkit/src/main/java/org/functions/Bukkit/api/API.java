@@ -1,30 +1,22 @@
 package org.functions.Bukkit.api;
 
-import me.clip.placeholderapi.PlaceholderAPI;
 import org.apache.commons.lang.StringUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Server;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.*;
+import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.functions.Bukkit.Events.PlayerSendActionBarEvent;
-import org.functions.Bukkit.Listeners.Listeners;
 import org.functions.Bukkit.Main.*;
-import org.functions.Bukkit.api.Permissions.BukkitPermissions;
+import org.functions.Bukkit.api.Animation.Animations;
+import org.functions.Bukkit.api.Permissions.BukkitPermission;
 import org.functions.Bukkit.api.serverPing.PingResponse;
 import org.functions.Bukkit.api.serverPing.ServerAddress;
 import org.functions.Bukkit.api.serverPing.ServerPinger;
 
-import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -34,6 +26,19 @@ import java.util.*;
 public class API {
     public API() {
 
+    }
+    public String message(String msg) {
+        return msg.replace("&","§");
+    }
+    public String msg(String msg) {
+        return getPluginPrefix() + msg.replace("&","§");
+    }
+    public void registerEvents(Listener listener) {
+        getPlugins().registerEvents(listener,Functions.instance);
+    }
+    public void getCommand(String name, TabExecutor tabExecutor) {
+        Functions.instance.getCommand(name).setExecutor(tabExecutor);
+        Functions.instance.getCommand(name).setTabCompleter(tabExecutor);
     }
     public String getGameDay(long time) {
         return (time / 18000L + "");
@@ -71,11 +76,34 @@ public class API {
             Functions.instance.getLanguage().options().copyDefaults(true);
             Functions.instance.getLanguage().options().copyHeader();
         }
-        Message = getPluginPrefix() + Message + "";
-        return Message+"";
+        return getPluginPrefix() + replace(Message,false);
     }
-    public BukkitPermissions getBukkitPermissions() {
-        return new BukkitPermissions(Functions.instance);
+    public BukkitPermission getBukkitPermissions() {
+        return new BukkitPermission();
+    }
+    public Location formatLocation(String path) {
+        String[] l = path.split(",");
+        return new Location(Bukkit.getWorld(l[0]),Double.parseDouble(l[1]),Double.parseDouble(l[2]),Double.parseDouble(l[3]),Float.parseFloat(l[4]),Float.parseFloat(l[5]));
+    }
+    public Location changeStringToLocation(String position) {
+        String[] location = position.split(",");
+        return new Location(Bukkit.getWorld(location[0]),Double.parseDouble(location[1]),Double.parseDouble(location[2]),Double.parseDouble(location[3]),Float.parseFloat(location[4]),Float.parseFloat(location[5]));
+    }
+    public String[] changeLocationToListString(Location loc) {
+        return (loc.getWorld().getName() + "," + loc.getX() + "," + loc.getY() + "," + loc.getZ() + "," + loc.getYaw() + "," + loc.getPitch()).split(",");
+    }
+    public String changeLocationToString(Location loc) {
+        return loc.getWorld().getName() + "," + loc.getX() + "," + loc.getY() + "," + loc.getZ() + "," + loc.getYaw() + "," + loc.getPitch();
+    }
+    public String toLocation(Location loc) {
+        String x = Functions.instance.getSettings().getString("Location");
+        x = x.replace("%world%", loc.getWorld().getName());
+        x = x.replace("%x%", loc.getX() / 1000.0D + "");
+        x = x.replace("%y%", loc.getY() / 1000.0D + "");
+        x = x.replace("%z%", loc.getZ() / 1000.0D + "");
+        x = x.replace("%yaw%", loc.getYaw() / 1000.0F + "");
+        x = x.replace("%pitch%", loc.getPitch() / 1000.0F + "");
+        return x;
     }
     @Deprecated
     public Player getPlayer(String name) {
@@ -88,10 +116,6 @@ public class API {
         if (getPlugin("Vault") !=null) {
             VaultHook.hasVault();
         }
-        if (getPlugin("PlaceholderAPI") !=null) {
-            new PlaceholderAPIHook().register();
-        }
-        getPlugins().registerEvents(new Listeners(), Functions.instance);
     }
     public void addPermission(Player p,String name) {
         //p.hasPermission(Permission.)
@@ -124,25 +148,39 @@ public class API {
     public PluginManager getPlugins() {
         return getServer().getPluginManager();
     }
-    public String replace(Object p,Object Message) {
-        String msg = Message+"";
-        if (getPlugin("PlaceholderAPI") != null) {
-            msg = PlaceholderAPI.setPlaceholders(getPlayer(p),msg);
+    public String getVersion() {
+        if (Functions.instance.getDescription().getVersion()==null) {
+            return "0.0.0.0";
         }
+        return Functions.instance.getDescription().getVersion();
+    }
+    public String replace(Object Message,boolean server) {
+        String msg = Message+"";
         msg = msg.replace("&","§");
+        msg = msg.replace("%server_tps%",tps());
+        msg = msg.replace("%tps%",getTPS());
+        msg = msg.replace("%server_name%",Functions.instance.getConfig().getString("Server-Name","Unknown"));
         return msg+"";
     }
-    public boolean BungeeCord() {
-        File dir = new File(Functions.instance.getDataFolder()+"".replace("plugins\\Functions",""));
-        File file = new File(dir,"spigot.yml");
-        YamlConfiguration.loadConfiguration(file);
-        FileConfiguration config = new YamlConfiguration();
-        try {
-            config.load(file);
-        } catch (IOException | InvalidConfigurationException e) {
-            e.printStackTrace();
+    public String TrueOrFalse(boolean tf) {
+        return tf ? putLanguage("True","&a是") : putLanguage("False","&c否");
+    }
+    public String replace(Object p,Object Message) {
+        String msg = Message+"";
+        Data data = new Data(getPlayer(p).getUniqueId());
+        for (String s : Functions.instance.getAnimations()) {
+            msg = msg.replace("%animation:" + s + "%", Animations.getString(s));
         }
-        return config.getBoolean("settings.bungeecord");
+        msg = msg.replace("%prefix%",data.getPrefixes().getPrefix());
+        msg = msg.replace("%suffix%",data.getSuffixes().getSuffix());
+        msg = msg.replace("&","§").replace("%server_tps%",tps()).replace("%tps%",getTPS()).replace("%server_name%",Functions.instance.getConfig().getString("Server-Name")).replace("none","").replace("%display_name%",getPlayer(p).getDisplayName());
+        msg = msg.replace("%player%",getPlayer(p).getName()).replace("%date%",getDate()).replace("%time%",getTime());
+        return msg;
+    }
+    public boolean BungeeCord() {
+        String dir_String = Functions.instance.getDataFolder().getAbsolutePath().replace('\\','/');
+        int lastindex = dir_String.lastIndexOf('/');
+        return false;
 
     }
     public PingResponse getServerList(ServerAddress address, int timeout) {
@@ -190,7 +228,7 @@ public class API {
         inventory.setItemInMainHand(Head);
     }
     public void sendConsole(Object Message) {
-        getServer().getConsoleSender().sendMessage(replace(null,Message));
+        getServer().getConsoleSender().sendMessage(replace(Message,true));
     }
     public Player getPlayer(Object player) {
         Player p = (Player)player;
@@ -213,8 +251,8 @@ public class API {
             return -2;
         }
 	}
-	public void sendActionBar(Player p,Object Message) {
-        PlayerSendActionBarEvent event = new PlayerSendActionBarEvent(p,Message+"");
+	public void sendActionBar(Object Message) {
+        PlayerSendActionBarEvent event = new PlayerSendActionBarEvent(Message+"");
         event.schedule(event);
     }
     public Server getServer() {
@@ -223,28 +261,24 @@ public class API {
     public String getNMS() {
         return getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];
     }
-//    public int randomTeleport(Player p,double x,double z,int min,int max) {
-//    PlayerNMS nms = new PlayerNMS();
-//    public boolean onCommand(CommandSender sender,Command cmd,String s,String[] args) {
-//        if (!args[1].matches("[0-9]*") || !args[1].matches("[0-9]*")) {
-//            if (!args[1].matches("[0-9]*.[0-9]*") || !args[1].matches("[0-9]*.[0-9]*")) {
-//                sender.sendMessage(nms.String("NoLocation-number","You location is string,Try 0.0 or 0"))
-//
-//            }
-//        }
-//
-//        double minloc = Double.parseDouble(args[1]);
-//        double maxloc = Double.parseDouble(args[2]);
-//        Player p = nms.getPlayer(false,args[0]);
-//        Random r = new Random();
-//        layerWorldp = Bukkit.getWorlds().get(0); // 获得主世界
-//        double randX = r.nextInt(maxloc) - minloc;
-//        double randZ = r.nextInt(maxloc) - minloc;
-//        Location offset = new Location(playerWorld, randX, 0, randZ).toHighestLocation(); // 获得最高的非空气方块
-//        p.teleport(player.getLocation().add(offset)); // add 加算距离
-//        player.sendMessage(nms.nms.String(1,"SpreadPlayers-Successfully","Successfully players spread players to location.");
-//        return true;
-//    }
+    public int randomTeleport(Player p, World world, double x, double z, int min, int max) {
+        Random r = new Random();
+        double randX = r.nextInt(max) - min;
+        double randZ = r.nextInt(max) - min;
+        return 0;
+        //Location offset = new Location(world, randX, 0, randZ).toHighestLocation(); // 获得最高的非空气方块
+        //p.teleport(player.getLocation().add(offset)); // add 加算距离
+        //player.sendMessage(nms.nms.String(1,"SpreadPlayers-Successfully","Successfully players spread players to location.");
+    }
+    public int randomTeleport(Player p,double x,double z,int min,int max) {
+        Random r = new Random();
+        double randX = r.nextInt(max) - min;
+        double randZ = r.nextInt(max) - min;
+        return 0;
+        //Location offset = new Location(playerWorld, randX, 0, randZ).toHighestLocation(); // 获得最高的非空气方块
+        //p.teleport(player.getLocation().add(offset)); // add 加算距离
+        //player.sendMessage(nms.nms.String(1,"SpreadPlayers-Successfully","Successfully players spread players to location.");
+    }
 //    public int randomTeleport(Player p,int min,int max) {
 //		double x = p.getLocation().getX();
 //		double z = p.getLocation().getY();

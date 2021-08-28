@@ -2,8 +2,12 @@ package org.functions.Bukkit.Main;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.Scoreboard;
 import org.functions.Bukkit.Events.PlayerSendTabListEvent;
 import org.functions.Bukkit.api.API;
+import org.functions.Bukkit.api.Animation.Animations;
+import org.functions.Bukkit.api.Permissions.BukkitPermission;
+import org.functions.Bukkit.api.ScoreBoard;
 import org.functions.Bukkit.api.Tab;
 
 import java.util.ArrayList;
@@ -12,10 +16,11 @@ import java.util.UUID;
 
 public class AutoRun implements Runnable{
     public void run() {
-        Functions.instance.getAPI().getBukkitPermissions().collectPermissions();
-        Functions.instance.getAPI().getBukkitPermissions().updateAllPlayers();
+        BukkitPermission.run();
+        new Animations().run();
         boolean tab_enable = false;
         FileConfiguration set = Functions.instance.getSettings();
+        Functions.instance.getAPI().sendActionBar(set.getString("ActionBar"));
         tab_enable = set.getBoolean("Tab.Enable");
         String path = "Tab.";
         String header = null;
@@ -75,7 +80,7 @@ public class AutoRun implements Runnable{
                     }
                 }
             }
-
+            data.getReport().check();
         }
 
     }

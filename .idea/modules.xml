@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Functions.iml" filepath="$PROJECT_DIR$/Functions.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Functions-bukkit/Functions-bukkit.iml" filepath="$PROJECT_DIR$/Functions-bukkit/Functions-bukkit.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Functions-common/Functions-common.iml" filepath="$PROJECT_DIR$/Functions-common/Functions-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Functions-waterfall/Functions-waterfall.iml" filepath="$PROJECT_DIR$/Functions-waterfall/Functions-waterfall.iml" />
+    </modules>
+  </component>
+</project>

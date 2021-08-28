@@ -14,4 +14,5 @@ public interface PermissionManager {
     boolean equals(String name);
     boolean equalsIgnoreCase(String name);
     boolean hasPermission(String name);
+    boolean exists();
 }

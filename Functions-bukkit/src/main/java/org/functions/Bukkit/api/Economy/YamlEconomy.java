@@ -2,6 +2,7 @@ package org.functions.Bukkit.api.Economy;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.functions.Bukkit.Main.Data;
 import org.functions.Bukkit.Main.Functions;
 
 import java.io.File;
@@ -161,16 +162,22 @@ public class YamlEconomy implements Economy {
         }
     }
     public static List<PlayerBalance> getFilePlayers() {
+        File dir = new File(getPaths() + "/user/economy");
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
         List<PlayerBalance> playerData = new ArrayList();
         File[] files = (new File(getPaths() + "/user/economy")).listFiles();
         File[] var6 = files;
         int var5 = files.length;
-
         for(int var4 = 0; var4 < var5; ++var4) {
             File file = var6[var4];
-            YamlData data = new YamlData(file.getName(), getPaths() + "/user/economy");
-            UUID uuid = UUID.fromString(data.getConfig().getString("uuid"));
-            double balance = data.getConfig().getDouble("Balance");
+            if (file.getName().contains("-Error-Arching.yml")) {
+                continue;
+            }
+            UUID uuid = UUID.fromString(file.getName().replace(".yml",""));
+            FileConfiguration set = Functions.instance.getData_Economy(uuid);
+            double balance = set.getDouble("Balance");
             playerData.add(new PlayerBalance(uuid, balance));
         }
 
@@ -178,15 +185,18 @@ public class YamlEconomy implements Economy {
     }
     public List<PlayerBalance> getPlayers() {
         List<PlayerBalance> playerData = new ArrayList();
-        File[] files = (new File(getPath() + "/user/economy")).listFiles();
+        File[] files = (new File(getPaths() + "/user/economy")).listFiles();
         File[] var6 = files;
         int var5 = files.length;
 
         for(int var4 = 0; var4 < var5; ++var4) {
             File file = var6[var4];
-            YamlData data = new YamlData(file.getName(), getPath() + "/user/economy");
-            UUID uuid = UUID.fromString(data.getConfig().getString("uuid"));
-            double balance = data.getConfig().getDouble("Balance");
+            if (file.getName().contains("-Error-Arching.yml")) {
+                continue;
+            }
+            UUID uuid = UUID.fromString(file.getName().replace(".yml",""));
+            FileConfiguration set = Functions.instance.getData_Economy(uuid);
+            double balance = set.getDouble("Balance");
             playerData.add(new PlayerBalance(uuid, balance));
         }
 

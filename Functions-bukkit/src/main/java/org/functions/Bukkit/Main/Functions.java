@@ -10,6 +10,7 @@ import org.functions.Bukkit.Main.CheckJvm;
 import org.functions.Bukkit.Main.Metrics;
 import org.functions.Bukkit.runTask.AutoSaveConfiguration;
 import org.functions.Bukkit.runTask.BalanceTopAutoRunnable;
+import org.functions.Bukkit.runTask.ScoreboardRunnable;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -29,7 +30,7 @@ public final class Functions extends JavaPlugin {
         if (!(new File(getDataFolder(),"config.yml").exists())) {
             saveResource("config.yml",false);
         }
-        instance= this;
+        instance = this;
     }
     public VaultHook getVault() {
         return new VaultHook();
@@ -37,15 +38,19 @@ public final class Functions extends JavaPlugin {
     public void onEnable() {
         instance = this;
         install();
+        getAPI().install();
+        AllRegister.run();
         //Metrics me= new Metrics(this,11673);
         //me.addCustomChart(new Metrics.SimplePie("chart_id", () -> "My value"));
         CheckJvm.checkJvm();
         if (getConfig().getBoolean("check-update")) {
-            getServer().getScheduler().scheduleSyncRepeatingTask(this, new Download(), 0, (getSettings().getLong("check-update.minutes") * 60 * 20));
+            //getServer().getScheduler().scheduleSyncRepeatingTask(this, new Download(), 0, (getSettings().getLong("check-update.minutes") * 60 * 20L));
         }
         runnable = new BalanceTopAutoRunnable();
         runnable.start(getSettings().getInt("Money.BalanceTopInterval"));
-        getServer().getScheduler().scheduleSyncRepeatingTask(this,new AutoSaveConfiguration(),getConfig().getLong("AutoSaveConfiguration.delay"),getConfig().getLong("AutoSaveConfiguration.period"));
+        getServer().getScheduler().scheduleSyncRepeatingTask(this,new AutoRun(),0L,1L);
+        getServer().getScheduler().scheduleSyncRepeatingTask(this,new ScoreboardRunnable(),20,getSettings().getLong("ScoreBoard.interval") / 1000 * 20);
+        getServer().getScheduler().scheduleSyncRepeatingTask(this,new AutoSaveConfiguration(),getConfig().getLong("AutoSaveConfiguration.delay") * 20,getConfig().getLong("AutoSaveConfiguration.period") * 20L);
 //            for (String s : Functions.instance.getAPI().getConfigurations().getGroup().getConfigurationSection("Groups").getKeys(false)) {
 //                Functions.instance.getAPI().getGroup(s).setName("默认组");
 //                con.saveAll();
@@ -53,8 +58,11 @@ public final class Functions extends JavaPlugin {
     public void install() {
         onSettings();
         onLanguage();
+        onServerTitle();
         onGroup();
-        getAPI().install();
+        onHelp();
+        onOP();
+        onWarps();
     }
     public void saveConfiguration() {
         try {
@@ -154,10 +162,99 @@ public final class Functions extends JavaPlugin {
     public static Functions getMain() {
         return instance;
     }
+    public File Animation_dir = new File(getDataFolder(),"animations");
+    private File animation;
+    private FileConfiguration Animation = new YamlConfiguration();
+    public List<String> getAnimations() {
+        if (!Animation_dir.exists()){
+            Animation_dir.mkdir();
+        }
+        List<String> ls = new ArrayList<>();
+        File[] files = Animation_dir.listFiles();
+        assert files != null;
+        int count = files.length;
+        if (count == 0) {
+            onAnimation("example");
+        }
+        for(int i = 0; i < count; ++i) {
+            File f = files[i];
+            if (f.getName().contains("-Error-Arching.yml")) {
+                continue;
+            }
+            ls.add(f.getName().replace(".yml",""));
+        }
+        return ls;
+    }
+    public FileConfiguration getAnimation(String file) {
+        File fil = new File(Animation_dir,file+".yml");
+        YamlConfiguration.loadConfiguration(fil);
+        File Error_Arching = new File(Animation_dir,file+"-Error-Arching.yml");
+        try {
+            Animation.load(fil);
+        } catch (IOException e) {
+            if (Error_Arching.exists()) {
+                Error_Arching.deleteOnExit();
+                Error_Arching.delete();
+            }
+            fil.renameTo(Error_Arching);
+            fil.deleteOnExit();
+            fil.delete();
+            onAnimation(file);
+            e.printStackTrace();
+        } catch (InvalidConfigurationException e) {
+            if (Error_Arching.exists()) {
+                Error_Arching.deleteOnExit();
+                Error_Arching.delete();
+            }
+            fil.renameTo(Error_Arching);
+            fil.deleteOnExit();
+            fil.delete();
+            onAnimation(file);
+            e.printStackTrace();
+        }
+        return Animation;
+    }
+    public void saveAnimation(String file) {
+
+    }
+    public void onAnimation(String file) {
+        if (!Animation_dir.exists()) {
+            Animation_dir.mkdir();
+        }
+        animation = new File(Animation_dir,file+".yml");
+        if (!animation.exists()) {
+            InputStream in = getResource("Animation.yml");
+            OutputStream out = null;
+            try {
+                out = new FileOutputStream(animation);
+                byte[] buf = new byte[1024];
+                int len;
+                while ((len = in.read(buf)) > 0) {
+                    out.write(buf, 0, len);
+                }
+                out.close();
+                in.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        YamlConfiguration.loadConfiguration(animation);
+        try {
+            Animation.load(animation);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InvalidConfigurationException e) {
+            e.printStackTrace();
+        }
+
+    }
     private File user_file;
     private File economy_file;
     private File dir = new File(getDataFolder().getAbsolutePath(),"user");
-    private Path dirs = Paths.get(Functions.instance.getDataFolder().getAbsolutePath() + "/user/");
     private File dir_data = new File(dir,"data");
     private File dir_economy = new File(dir,"economy");
     public File getEconomyFolder() {
@@ -222,7 +319,9 @@ public final class Functions extends JavaPlugin {
         YamlConfiguration.loadConfiguration(file);
         File Error_Arching = new File(dir_economy,uuid+"-Error-Arching.yml");
         try {
+            economy.save(file);
             economy.load(file);
+            economy.set("uuid",uuid.toString()+"");
         } catch (IOException e) {
             if (Error_Arching.exists()) {
                 Error_Arching.deleteOnExit();
@@ -234,6 +333,15 @@ public final class Functions extends JavaPlugin {
             onData(uuid);
             e.printStackTrace();
         } catch (InvalidConfigurationException e) {
+            if (Error_Arching.exists()) {
+                Error_Arching.deleteOnExit();
+                Error_Arching.delete();
+            }
+            file.renameTo(Error_Arching);
+            file.deleteOnExit();
+            file.delete();
+            onData(uuid);
+            e.printStackTrace();
             e.printStackTrace();
         }
         return economy;
@@ -243,7 +351,13 @@ public final class Functions extends JavaPlugin {
         YamlConfiguration.loadConfiguration(file);
         File Error_Arching = new File(dir_data,uuid+"-Error-Arching.yml");
         try {
+            data.save(file);
             data.load(file);
+            data.set("uuid",uuid.toString()+"");
+            if (data.getString("Group")==null) {
+                data.set("Group","Default");
+            }
+            data.save(file);
         } catch (IOException e) {
             if (Error_Arching.exists()) {
                 Error_Arching.deleteOnExit();
@@ -255,6 +369,14 @@ public final class Functions extends JavaPlugin {
             onData(uuid);
             e.printStackTrace();
         } catch (InvalidConfigurationException e) {
+            if (Error_Arching.exists()) {
+                Error_Arching.deleteOnExit();
+                Error_Arching.delete();
+            }
+            file.renameTo(Error_Arching);
+            file.deleteOnExit();
+            file.delete();
+            onData(uuid);
             e.printStackTrace();
         }
         return data;
@@ -275,13 +397,13 @@ public final class Functions extends JavaPlugin {
     public FileConfiguration getSettings() {
         return settings;
     }
-    private File group_file = new File(getDataFolder(),"Groups.yml");
+    public File group_file = new File(getDataFolder(),"Groups.yml");
     private FileConfiguration group = new YamlConfiguration();
     private void onGroup() {
-        onLoadFile(settings_file,settings,"Groups.yml",false);
+        onLoadFile(group_file,group,"Groups.yml",false);
     }
     public FileConfiguration getGroup() {
-        return settings;
+        return group;
     }
     private File help_file = new File(getDataFolder(),"Helps.yml");
     private FileConfiguration help = new YamlConfiguration();
@@ -307,21 +429,23 @@ public final class Functions extends JavaPlugin {
     public FileConfiguration getServerTitle() {
         return serverTitle;
     }
-    private File report_file = new File(getDataFolder(),"Report.yml");
-    private FileConfiguration report = new YamlConfiguration();
-    private void onReport() {
-        onLoadFile(report_file,report,"Report.yml",false);
-    }
-    public FileConfiguration getReport() {
-        return report;
-    }
-    private File op_file = new File(getDataFolder(),"op.yml");
+    private File op_file = new File(getDataFolder(),"ops.yml");
     private FileConfiguration op = new YamlConfiguration();
     private void onOP() {
-        onLoadFile(op_file,op,"op.yml",false);
+        onLoadFile(op_file,op,"ops.yml",false);
     }
     public FileConfiguration getOP() {
         return op;
     }
-
+    public List<String> getOperators() {
+        return getOP().getStringList("Operators");
+    }
+    public void saveOperators(List<String> ls) {
+        getOP().set("Operators",ls);
+        try {
+            getOP().save(op_file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -12,11 +12,16 @@ public class Download implements Runnable {
     String github = "github.com/";
     String my = url + "2b2ttanxiu.github.io/";
     String profile = url + github + "2b2ttanxiu/";
-    String version = null;
+    String f;
+    String version = "0.0.0.0";
     String msg = null;
+    public String file() {
+        f = profile + "Functions/releases/download/" + version + "/Functions.jar";
+        return f;
+    }
     public static String getVersion() {
         URL url = null;
-        String version = null;
+        String version = "0.0.0.0";
         InputStream is = null;
         BufferedReader br = null;
         try {
@@ -114,7 +119,6 @@ public class Download implements Runnable {
                 Functions.instance.getAPI().sendConsole("If you in the " + Functions.instance.getSettings().getInt("check-update.minutes") + " try again");
                 Functions.instance.getAPI().sendConsole("URL: " + profile + "Functions/releases/download/" + version + "/Functions.jar");
             }
-            Functions.instance.getAPI().sendConsole(msg);
         } else {
             Functions.instance.getAPI().sendConsole(msg);
         }

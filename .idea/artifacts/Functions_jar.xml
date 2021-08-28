@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Functions:jar">
+    <output-path>$PROJECT_DIR$/../../server/paper1.12.2/plugins</output-path>
+    <root id="archive" name="Functions.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/Functions-common/src/main/java/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="module-output" name="Functions-bukkit" />
+    </root>
+  </artifact>
+</component>

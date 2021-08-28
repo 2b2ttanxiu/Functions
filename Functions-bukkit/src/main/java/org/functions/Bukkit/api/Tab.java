@@ -104,7 +104,7 @@ public class Tab {
         if (listName == null) {
             return;
         }
-        player.setPlayerListName(Functions.instance.getAPI().replace(player,listName));
+        player.setPlayerListName(Functions.instance.getAPI().replace(player,listName.replace("&","§").replace("none","")));
     }
     public enum Version {
         v1_8_R1,

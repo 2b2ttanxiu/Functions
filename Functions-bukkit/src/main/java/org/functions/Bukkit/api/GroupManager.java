@@ -8,10 +8,13 @@ public interface GroupManager {
     public Prefixes getPrefix();
     public Suffixes getSuffix();
     public String getJoinFormat();
+    public void save();
     public String getQuitFormat();
     public String getChatFormat();
     public Message getMessage();
     public List<String> getPermissions();
+    public long getChatDelay();
+    public long getCommandDelay();
     public boolean needOP();
     public Mute getMute();
     public Anti_Word getAnti_Word();

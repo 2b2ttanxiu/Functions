@@ -42,16 +42,10 @@ public class PlayerSendMessageEvent extends Event {
             Functions.instance.getServer().getPluginManager().callEvent(event);
             return;
         }
-        synchronized (Functions.instance.getServer()) {
-            Functions.instance.getServer().getScheduler().scheduleSyncDelayedTask(Functions.instance, new Runnable() {
-                public void run() {
                     Functions.instance.getServer().getPluginManager().callEvent(event);
-                    String f = Functions.instance.getAPI().replace(from,msg);
-                    String t = Functions.instance.getAPI().replace(to,msg);
+                    String f = Functions.instance.getAPI().replace(from.getUniqueId(),msg);
+                    String t = Functions.instance.getAPI().replace(to.getUniqueId(),msg);
                     from.sendMessage(t);
                     to.sendMessage(f);
-                }
-            },10);
-        }
     }
 }

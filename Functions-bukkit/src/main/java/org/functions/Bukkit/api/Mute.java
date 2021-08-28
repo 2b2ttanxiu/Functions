@@ -6,5 +6,6 @@ public interface Mute {
     public boolean getTempMute();
     public void setTempMute(long start,long end);
     public long getTempTime();
+    public void setUnTempMute();
     boolean exists();
 }

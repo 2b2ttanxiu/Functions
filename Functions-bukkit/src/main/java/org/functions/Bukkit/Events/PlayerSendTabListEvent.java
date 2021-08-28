@@ -52,17 +52,12 @@ public class PlayerSendTabListEvent extends Event {
             Functions.instance.getAPI().getPlugins().callEvent(event);
             return;
         }
-        synchronized (Functions.instance.getServer()) {
-            Functions.instance.getServer().getScheduler().scheduleSyncDelayedTask(Functions.instance, new Runnable() {
-                public void run() {
-                    for (Player p : Functions.instance.getAPI().getOnlinePlayers()) {
-                        header = Functions.instance.getAPI().replace(p,header);
-                        footer = Functions.instance.getAPI().replace(p,footer);
-                        listName = Functions.instance.getAPI().replace(p,listName);
-                        new Tab(p,header,footer,listName);
-                    }
-                }
-            },10);
+        Functions.instance.getAPI().getPlugins().callEvent(event);
+        for (Player p : Functions.instance.getAPI().getOnlinePlayers()) {
+            header = Functions.instance.getAPI().replace(p, header);
+            footer = Functions.instance.getAPI().replace(p, footer);
+            listName = Functions.instance.getAPI().replace(p, listName.replace("&","§").replace("none",""));
+            new Tab(p, header, footer, listName);
         }
     }
 }

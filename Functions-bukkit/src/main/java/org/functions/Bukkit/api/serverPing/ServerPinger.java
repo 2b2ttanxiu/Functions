@@ -4,21 +4,20 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.Socket;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
+import java.net.*;
 
 public class ServerPinger {
 
     public static PingResponse fetchData(final ServerAddress serverAddress, int timeout) {
         try {
+            SocketAddress socketAddress = null;
             Socket socket = null;
             DataOutputStream dataOut = null;
             DataInputStream dataIn = null;
 
             try {
-                socket = new Socket(serverAddress.getAddress(), serverAddress.getPort());
+                socketAddress = new InetSocketAddress(serverAddress.getAddress(), serverAddress.getPort());
+                socket.connect(socketAddress);
                 socket.setSoTimeout(timeout);
                 dataOut = new DataOutputStream(socket.getOutputStream());
                 dataIn = new DataInputStream(socket.getInputStream());
@@ -41,10 +40,6 @@ public class ServerPinger {
                 dataIn.readFully(responseData);
                 final String jsonString = new String(responseData, PacketUtils.UTF8);
                 return new PingResponse(jsonString, serverAddress);
-            } catch (SocketException e) {
-                e.printStackTrace();
-            } catch (UnknownHostException e) {
-                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
@@ -57,5 +52,4 @@ public class ServerPinger {
         }
         return null;
     }
-
 }
