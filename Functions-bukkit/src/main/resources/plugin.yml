@@ -37,3 +37,7 @@ commands:
     description: Functions pay.
   hat:
     description: Functions hat.
+  weather:
+    description: Functions weather.
+  spawn:
+    description: Functions spawn.

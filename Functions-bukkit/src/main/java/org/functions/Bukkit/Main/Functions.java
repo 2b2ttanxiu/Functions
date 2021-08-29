@@ -1,5 +1,6 @@
 package org.functions.Bukkit.Main;
 
+import org.bukkit.Location;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -63,6 +64,7 @@ public final class Functions extends JavaPlugin {
         onHelp();
         onOP();
         onWarps();
+        onSpawn();
     }
     public void saveConfiguration() {
         try {
@@ -396,5 +398,24 @@ public final class Functions extends JavaPlugin {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    private File spawn_file = new File(getDataFolder(),"Spawn.yml");
+    private FileConfiguration spawn = new YamlConfiguration();
+    private void onSpawn() {
+        onLoadFile(spawn_file,spawn,"Spawn.yml",false);
+    }
+    public FileConfiguration getSpawn() {
+        return spawn;
+    }
+    public Location getSpawnLocation(String s) {
+        for (String v : getSpawns()) {
+            if (v.equalsIgnoreCase(s)) {
+                return getAPI().changeStringToLocation(v);
+            }
+        }
+        return null;
+    }
+    public List<String> getSpawns() {
+        return new ArrayList<>(getSpawn().getConfigurationSection("Spawns").getKeys(false));
     }
 }

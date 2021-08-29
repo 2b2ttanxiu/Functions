@@ -37,6 +37,7 @@ Groups:
       - "functions.command.money"
       - "functions.command.home"
       - "functions.command.back"
+      - "functions.command.spawn.*"
   VIP:
     DisplayName: "&e会员"
     Name: "&e会员组"
@@ -73,6 +74,7 @@ Groups:
       - "functions.command.home"
       - "functions.command.back"
       - "functions.command.hat"
+      - "functions.command.spawn.*"
   Admin:
     DisplayName: "&c管理"
     Name: "&c管理组"
@@ -110,3 +112,7 @@ Groups:
       - "functions.command.back"
       - "functions.command.hat"
       - "functions.command.gamemode.*"
+      - "functions.command.weather"
+      - "functions.command.spawn.*"
+      - "functions.command.prefix.*"
+      - "functions.command.suffix.*"

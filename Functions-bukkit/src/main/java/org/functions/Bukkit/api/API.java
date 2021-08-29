@@ -132,6 +132,16 @@ public class API {
         }
         return false;
     }
+    public String getPlayerList() {
+        String format = Functions.instance.getSettings().getString("Players");
+        StringBuilder l = new StringBuilder();
+        int i = 0;
+        for (Player p : getOnlinePlayers()) {
+            i++;
+            l.append(format.replace("%player%", p.getName()).replace("%count%", i + ""));
+        }
+        return putLanguage("PlayerList","玩家(%size%): %players%(%count%)").replace("%size%",i+"");
+    }
     public Collection<? extends Player> getOnlinePlayers() {
         return getServer().getOnlinePlayers();
     }
@@ -164,6 +174,9 @@ public class API {
     }
     public String TrueOrFalse(boolean tf) {
         return tf ? putLanguage("True","&a是") : putLanguage("False","&c否");
+    }
+    public String TrueOrFalseString(String msg,boolean tf) {
+        return tf ? "§a" + msg : "§c" + msg;
     }
     public String replace(Object p,Object Message) {
         String msg = Message+"";

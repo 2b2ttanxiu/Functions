@@ -20,6 +20,8 @@ public class RegisterCommands {
         CommandMoney.run();
         CommandPay.run();
         CommandHat.run();
+        CommandWeather.run();
+        CommandSpawn.run();
         Functions.instance.getAPI().sendConsole("§aRegister Commands successfully!");
     }
 }
