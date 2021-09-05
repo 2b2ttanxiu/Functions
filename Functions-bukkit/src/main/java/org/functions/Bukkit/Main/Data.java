@@ -406,9 +406,9 @@ public class Data implements DataManager {
             @Override
             public String getPrefix() {
                 if (set.getString("Prefix")==null) {
-                    return getGroup().getPrefix().getPrefix();
+                    return getGroup().getPrefix().getPrefix().replace("&","§").replace("none","");
                 }
-                return set.getString("Prefix");
+                return set.getString("Prefix").replace("&","§").replace("none","");
             }
 
             @Override
@@ -441,9 +441,9 @@ public class Data implements DataManager {
             @Override
             public String getSuffix() {
                 if (set.getString("Suffix")==null) {
-                    return getGroup().getSuffix().getSuffix();
+                    return getGroup().getSuffix().getSuffix().replace("&","§").replace("none","");
                 }
-                return set.getString("Suffix");
+                return set.getString("Suffix").replace("&","§").replace("none","");
             }
 
             @Override

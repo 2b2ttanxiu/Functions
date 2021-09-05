@@ -1,18 +1,30 @@
 package org.functions.Bukkit.Listeners;
 
+import org.bukkit.Location;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockDispenseEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.event.server.ServerListPingEvent;
+import org.bukkit.util.CachedServerIcon;
 import org.functions.Bukkit.Main.Data;
 import org.functions.Bukkit.Main.Functions;
 import org.functions.Bukkit.Main.Group;
 import org.functions.Bukkit.api.API;
 import org.functions.Bukkit.api.ClickPerSecondsManager;
+import org.functions.Bukkit.api.Permissions.BukkitPermission;
+import org.functions.Bukkit.runTask.ServerTitleRunnable;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Objects;
+import java.util.Random;
 
 public class Listeners implements Listener {
     Data data;
@@ -29,8 +41,8 @@ public class Listeners implements Listener {
     @EventHandler
     public void build(BlockPlaceEvent event) {
         data = new Data(event.getPlayer().getUniqueId());
-        if (!data.getBukkitPermissions().has(event.getPlayer().getUniqueId(), "functions.event.build")) {
-            event.getPlayer().sendMessage(data.getBukkitPermissions().noPerms("functions.event.build"));
+        if (!BukkitPermission.has(event.getPlayer().getUniqueId(), "functions.event.build")) {
+            event.getPlayer().sendMessage(BukkitPermission.noPerms("functions.event.build"));
             event.setCancelled(true);
             event.setBuild(false);
         }
@@ -38,8 +50,8 @@ public class Listeners implements Listener {
     @EventHandler
     public void Break(BlockBreakEvent event) {
         data = new Data(event.getPlayer().getUniqueId());
-        if (!data.getBukkitPermissions().has(event.getPlayer().getUniqueId(), "functions.event.break")) {
-            event.getPlayer().sendMessage(data.getBukkitPermissions().noPerms("functions.event.break"));
+        if (!BukkitPermission.has(event.getPlayer().getUniqueId(), "functions.event.break")) {
+            event.getPlayer().sendMessage(BukkitPermission.noPerms("functions.event.break"));
             event.setCancelled(true);
             event.setDropItems(false);
         }
@@ -94,4 +106,55 @@ public class Listeners implements Listener {
         }
         data.getBacks().create(event.getEntity().getLocation());
     }
+    @EventHandler
+    public void run(BlockDispenseEvent b) {
+        if ((b.getBlock().getLocation().getY() == (double)(b.getBlock().getWorld().getMaxHeight() - 1) || b.getBlock().getLocation().getY() == 0.0D || b.getBlock().getLocation().getY() == -64.0D) && b.getItem().getType().name().endsWith("SHULKER_BOX")) {
+            b.setCancelled(true);
+            Location loc = b.getBlock().getLocation();
+            Collection<Entity> entities = loc.getWorld().getNearbyEntities(loc,256,256,256);
+            Player player = null;
+            for (Entity e : entities) {
+                if (!(e instanceof Player)) {
+                    continue;
+                }
+                player = (Player)e;
+            }
+            assert player != null;
+            api.sendOperators(api.getPluginPrefix() + "§c[ERROR] One of the players tried to crash the server! Player name: " + player.getName() + " Position: " + api.changeLocationToString(loc));
+            api.sendConsole("§c[ERROR] One of the players tried to crash the server! Player name: " + player.getName() + " Position: " + api.changeLocationToString(loc));
+        }
+
+    }
+    @EventHandler
+    public void ServerTitle(ServerListPingEvent event) {
+        event.setMotd(ServerTitleRunnable.getString());
+        event.setMaxPlayers(ServerTitleRunnable.getMax());
+        for (File file : Objects.requireNonNull(Functions.instance.getServerIcons())) {
+            if (Functions.instance.getSettings().getBoolean("Maintenance")) {
+                if (!file.getName().contains("serviceModeIcon.png")) {
+                    continue;
+                }
+                try {
+                    event.setServerIcon(Functions.instance.getServer().loadServerIcon(file));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                if (file.getName().contains("serviceModeIcon.png")) {
+                    continue;
+                }
+                Random random = new Random();
+                int i = random.nextInt(Functions.instance.getServerIcons().size());
+                if (Functions.instance.getServerIcons().get(i).getName().contains("serviceModeIcon.png")) {
+                    continue;
+                }
+                try {
+                    event.setServerIcon(Functions.instance.getServer().loadServerIcon(Objects.requireNonNull(Functions.instance.getServerIcons().get(i))));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
 }

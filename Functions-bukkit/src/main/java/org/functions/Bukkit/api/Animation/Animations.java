@@ -9,44 +9,55 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class Animations {
+public class Animations implements Runnable{
     private Functions a = Functions.instance;
-    String x;
+    String s;
     FileConfiguration set;
+    public Animations(String animation) {
+        this.s = animation;
+    }
     public void run() {
         List<String> ls = new ArrayList<>();
         if (a.getAnimations().size()==0) {
             return;
         }
-        for (String s : a.getAnimations()) {
-            set = a.getAnimation(s);
-            if (set.getBoolean("random")) {
-                Random random = new Random();
-                set.set("count",random.nextInt(ls.size()+1));
-                return;
+        if (a.getAPI().getOnlinePlayers().size()==0) {
+            Functions.instance.animation_hashmap.clear();
+        }
+            int i = 0;
+            if (Functions.instance.animation_hashmap.containsKey(s)) {
+                i = Functions.instance.animation_hashmap.get(s);
+            } else {
+                Functions.instance.animation_hashmap.put(s, 0);
+                i = Functions.instance.animation_hashmap.get(s);
             }
-            int i = set.getInt("count",0);
+            Functions.instance.animation_hashmap.remove(s);
+            set = a.getAnimation(s);
             ls = set.getStringList("line");
-            if (ls.size() != 1) {
+            if (set.getBoolean("random")) {
+                if (ls.size()==0) return;
+                Random random = new Random();
+                    Functions.instance.animation_hashmap.remove(s);
+                    Functions.instance.animation_hashmap.put(s, random.nextInt(ls.size()));
+                    return;
+            }
+            if (ls.size() != 0) {
                 if (ls.size() != i) {
                     ++i;
                 }
-
                 if (ls.size() == i) {
                     i = 0;
                 }
             }
-            set.set("count",i);
-            try {
-                set.save(new File(a.Animation_dir,s+".yml"));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+            Functions.instance.animation_hashmap.remove(s);
+            Functions.instance.animation_hashmap.put(s,i);
     }
     public static String getString(String animation) {
         Functions.instance.onAnimation(animation);
         FileConfiguration set = Functions.instance.getAnimation(animation);
-        return set.getStringList("line").get(set.getInt("count"));
+        if (Functions.instance.animation_hashmap.containsKey(animation)) {
+            return set.getStringList("line").get(Functions.instance.animation_hashmap.get(animation));
+        }
+        return "no animation run it?";
     }
 }

@@ -172,6 +172,14 @@ public class API {
         msg = msg.replace("%server_name%",Functions.instance.getConfig().getString("Server-Name","Unknown"));
         return msg+"";
     }
+    public void sendOperators(String msg) {
+        for (Player p : getOnlinePlayers()) {
+            if (!p.isOp()) {
+                continue;
+            }
+            p.sendMessage(msg);
+        }
+    }
     public String TrueOrFalse(boolean tf) {
         return tf ? putLanguage("True","&a是") : putLanguage("False","&c否");
     }
@@ -181,8 +189,10 @@ public class API {
     public String replace(Object p,Object Message) {
         String msg = Message+"";
         Data data = new Data(getPlayer(p).getUniqueId());
-        for (String s : Functions.instance.getAnimations()) {
-            msg = msg.replace("%animation:" + s + "%", Animations.getString(s));
+        if (msg.contains("%animation_")) {
+            for (String s : Functions.instance.getAnimations()) {
+                msg = msg.replace("%animation_" + s + "%", Animations.getString(s));
+            }
         }
         msg = msg.replace("%prefix%",data.getPrefixes().getPrefix());
         msg = msg.replace("%suffix%",data.getSuffixes().getSuffix());

@@ -58,6 +58,7 @@ public class PlayerSendTabListEvent extends Event {
             footer = Functions.instance.getAPI().replace(p, footer);
             listName = Functions.instance.getAPI().replace(p, listName.replace("&","§").replace("none",""));
             new Tab(p, header, footer, listName);
+            p.setPlayerListName(Functions.instance.getAPI().replace(p,listName.replace("&","§").replace("none","")));
         }
     }
 }

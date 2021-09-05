@@ -21,7 +21,7 @@ public class BalanceTopAutoRunnable extends BukkitRunnable {
     }
 
     public void start(int interval) {
-        this.runTaskTimerAsynchronously(Functions.instance, 1L, (long)interval);
+        this.runTaskTimerAsynchronously(Functions.instance, 5L, (long)interval);
     }
 
     public List<PlayerBalance> getBalanceTop() {

@@ -67,6 +67,7 @@ public class PlayerSendScoreboardDisplayNameEvent extends Event {
                         Functions.instance.getServer().getPluginManager().callEvent(event);
                         return;
                     }
+        Functions.instance.getServer().getPluginManager().callEvent(event);
                     ls = line;
                     int i = 0;
                     for (Player p : api.getOnlinePlayers()) {

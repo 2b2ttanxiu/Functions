@@ -4,6 +4,8 @@ import org.bukkit.Location;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.permissions.Permission;
+import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.functions.Bukkit.api.API;
 import org.functions.Bukkit.api.serverPing.ServerAddress;
@@ -21,6 +23,9 @@ import java.text.NumberFormat;
 import java.util.*;
 
 public final class Functions extends JavaPlugin {
+    public LinkedHashMap<UUID, FileConfiguration> daters = new LinkedHashMap<>();
+    public LinkedHashMap<String, Integer> animation_hashmap = new LinkedHashMap<>();
+    public int titles = 0;
     public static Functions instance;
     private BalanceTopAutoRunnable runnable = null;
     private Map<String, Integer> suffixes = new HashMap();
@@ -41,14 +46,14 @@ public final class Functions extends JavaPlugin {
         install();
         getAPI().install();
         AllRegister.run();
-        //Metrics me= new Metrics(this,11673);
-        //me.addCustomChart(new Metrics.SimplePie("chart_id", () -> "My value"));
+        Metrics me= new Metrics(this,11673);
+        me.addCustomChart(new Metrics.SimplePie("chart_id", () -> "My value"));
         CheckJvm.checkJvm();
         if (getConfig().getBoolean("check-update")) {
             //getServer().getScheduler().scheduleSyncRepeatingTask(this, new Download(), 0, (getSettings().getLong("check-update.minutes") * 60 * 20L));
         }
-        runnable = new BalanceTopAutoRunnable();
-        runnable.start(getSettings().getInt("Money.BalanceTopInterval"));
+        //runnable = new BalanceTopAutoRunnable();
+        //runnable.start(getSettings().getInt("Money.BalanceTopInterval"));
         getServer().getScheduler().scheduleSyncRepeatingTask(this,new AutoRun(),0L,1L);
         getServer().getScheduler().scheduleSyncRepeatingTask(this,new ScoreboardRunnable(),20,getSettings().getLong("ScoreBoard.interval") / 1000 * 20);
         getServer().getScheduler().scheduleSyncRepeatingTask(this,new AutoSaveConfiguration(),getConfig().getLong("AutoSaveConfiguration.delay") * 20,getConfig().getLong("AutoSaveConfiguration.period") * 20L);
@@ -65,6 +70,56 @@ public final class Functions extends JavaPlugin {
         onOP();
         onWarps();
         onSpawn();
+    }
+    private File dir = new File(getDataFolder().getAbsolutePath(),"user");
+    private File dir_data = new File(dir,"data");
+    public FileConfiguration getData(UUID uuid) {
+        onDaters();
+        return daters.get(uuid);
+    }
+    public void onDaters() {
+        File file;
+        File[] files = (new File(String.valueOf(dir_data))).listFiles();
+        assert files != null;
+        for (File f : files) {
+            if (f.getName().contains("-Error-Arching.yml")) {
+                continue;
+            }
+            UUID uuid = UUID.fromString(f.getName().replace(".yml",""));
+            file = f;
+            YamlConfiguration.loadConfiguration(file);
+            File Error_Arching = new File(dir_data,uuid+"-Error-Arching.yml");
+            try {
+                data.load(file);
+                if (data.getString("Group")==null) {
+                    data.addDefault("Group", "Default");
+                    data.options().copyDefaults(true);
+                    data.options().copyHeader();
+                }
+                daters.put(uuid,data);
+                data.save(file);
+            } catch (IOException e) {
+                if (Error_Arching.exists()) {
+                    Error_Arching.deleteOnExit();
+                    Error_Arching.delete();
+                }
+                file.renameTo(Error_Arching);
+                file.deleteOnExit();
+                file.delete();
+                onData(uuid);
+                e.printStackTrace();
+            } catch (InvalidConfigurationException e) {
+                if (Error_Arching.exists()) {
+                    Error_Arching.deleteOnExit();
+                    Error_Arching.delete();
+                }
+                file.renameTo(Error_Arching);
+                file.deleteOnExit();
+                file.delete();
+                onData(uuid);
+                e.printStackTrace();
+            }
+        }
     }
     public void saveConfiguration() {
         try {
@@ -256,8 +311,6 @@ public final class Functions extends JavaPlugin {
     }
     private File user_file;
     private File economy_file;
-    private File dir = new File(getDataFolder().getAbsolutePath(),"user");
-    private File dir_data = new File(dir,"data");
     public File getEconomyFolder() {
         return new File(dir,"data");
     }
@@ -297,45 +350,26 @@ public final class Functions extends JavaPlugin {
         return getData_Data(uuid);
     }
     public FileConfiguration getData_Data(UUID uuid) {
-        File file = new File(dir_data,uuid+".yml");
-        YamlConfiguration.loadConfiguration(file);
-        File Error_Arching = new File(dir_data,uuid+"-Error-Arching.yml");
-        try {
-            data.load(file);
-            data.set("uuid",uuid.toString()+"");
-            if (data.getString("Group")==null) {
-                data.addDefault("Group", "Default");
-                data.options().copyDefaults(true);
-                data.options().copyHeader();
-            }
-            data.save(file);
-        } catch (IOException e) {
-            if (Error_Arching.exists()) {
-                Error_Arching.deleteOnExit();
-                Error_Arching.delete();
-            }
-            file.renameTo(Error_Arching);
-            file.deleteOnExit();
-            file.delete();
-            onData(uuid);
-            e.printStackTrace();
-        } catch (InvalidConfigurationException e) {
-            if (Error_Arching.exists()) {
-                Error_Arching.deleteOnExit();
-                Error_Arching.delete();
-            }
-            file.renameTo(Error_Arching);
-            file.deleteOnExit();
-            file.delete();
-            onData(uuid);
-            e.printStackTrace();
-        }
-        return data;
+        return getData(uuid);
     }
     private File language_file = new File(getDataFolder(),"Language-" + getConfig().getString("Language") + ".yml");
     private FileConfiguration language = new YamlConfiguration();
     private void onLanguage() {
         onLoadFile(language_file,language,"Language-" + getConfig().getString("Language") + ".yml",false);
+    }
+    public List<File> getServerIcons() {
+        File[] file = (getDataFolder()).listFiles();
+        if (file == null) {
+            return null;
+        }
+        List<File> ls = new ArrayList<>();
+        for (File f : file) {
+            if (!f.getName().endsWith(".png")) {
+                continue;
+            }
+            ls.add(f);
+        }
+        return ls;
     }
     public FileConfiguration getLanguage() {
         return language;
@@ -372,7 +406,7 @@ public final class Functions extends JavaPlugin {
     public FileConfiguration getWarps() {
         return warp;
     }
-    private File serverTitle_file = new File(getDataFolder(),"ServerTitle.yml");
+    public File serverTitle_file = new File(getDataFolder(),"ServerTitle.yml");
     private FileConfiguration serverTitle = new YamlConfiguration();
     private void onServerTitle() {
         onLoadFile(serverTitle_file,serverTitle,"ServerTitle.yml",false);

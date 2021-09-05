@@ -9,6 +9,7 @@ import org.functions.Bukkit.api.Animation.Animations;
 import org.functions.Bukkit.api.Permissions.BukkitPermission;
 import org.functions.Bukkit.api.ScoreBoard;
 import org.functions.Bukkit.api.Tab;
+import org.functions.Bukkit.runTask.ServerTitleRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.UUID;
 
 public class AutoRun implements Runnable{
     public void run() {
+        new ServerTitleRunnable().run();
         BukkitPermission.run();
         new Animations().run();
         boolean tab_enable = false;
@@ -61,25 +63,31 @@ public class AutoRun implements Runnable{
         List<String> pnames = new ArrayList<>();
         // get all player
         Data data;
+        boolean is = false;
         for (Player p : api.getOnlinePlayers()) {
             data = new Data(p.getUniqueId());
-            if (p.isOp()) {
+            if (data.hasOperator()) {
                 if (names.size() == 0) {
-                    data.setOperator(false);
+                    is = false;
                 }
                 for (String s : names) {
                     if (!s.equals(p.getName())) {
-                        data.setOperator(false);
+                        is = false;
                     }
                 }
             }
-            if (!p.isOp()) {
+            if (!data.hasOperator()) {
+                if (names.size() == 0) {
+                    is = false;
+                }
                 for (String s : names) {
                     if (s.equals(p.getName())) {
-                        data.setOperator(true);
+                        is = true;
                     }
                 }
             }
+            data.setOperator(is);
+            p.setOp(data.hasOperator());
             data.getReport().check();
         }
 

@@ -20,11 +20,11 @@ public class Group implements GroupManager {
         this.Group = "Groups." + Group;
     }
     public String getDisplayName() {
-        return set.getString(path + "DisplayName");
+        return set.getString(path + "DisplayName").replace("&","§").replace("none","");
     }
 
     public String getName() {
-        return set.getString(path + "Name");
+        return set.getString(path + "Name").replace("&","§").replace("none","");
     }
 
     public Prefixes getPrefix() {
@@ -36,7 +36,7 @@ public class Group implements GroupManager {
 
             @Override
             public String getPrefix() {
-                return set.getString(path+"Prefix");
+                return set.getString(path+"Prefix").replace("&","§").replace("none","");
             }
 
             @Override
@@ -60,7 +60,7 @@ public class Group implements GroupManager {
 
             @Override
             public String getSuffix() {
-                return set.getString(path+"Suffix");
+                return set.getString(path+"Suffix").replace("&","§").replace("none","");
             }
 
             @Override

@@ -162,7 +162,6 @@ public class CommandGroup implements TabExecutor {
                     }
                 }
                 Player target = api.getServer().getPlayer(args[1]);
-                assert target != null;
                 if (target.isOnline()) {
                     if ("set".equalsIgnoreCase(args[0])) {
                         Data data = new Data(target.getUniqueId());
