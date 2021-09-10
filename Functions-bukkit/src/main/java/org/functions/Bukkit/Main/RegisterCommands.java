@@ -11,7 +11,7 @@ public class RegisterCommands {
         CommandHome.run();
         CommandReport.run();
         CommandSuicide.run();
-        CommandBack.run();;
+        CommandBack.run();
         CommandDeleteOperator.run();
         CommandOperator.run();
         CommandPermission.run();
